@@ -54,7 +54,7 @@ workflows:
               - install
         - test:
             requires:
-              - lint
+              - install
         - build-node:
             requires:
               - test
