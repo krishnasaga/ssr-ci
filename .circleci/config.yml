@@ -46,8 +46,18 @@ workflows:
     build-and-test:
       jobs:
         - checkout
-        - install
-        - lint
-        - test
-        - build-node
-        - build-web
+        - install:
+            requires:
+              - checkout
+        - lint:
+            requires:
+              - install
+        - test:
+            requires:
+              - lint
+        - build-node:
+            requires:
+              - test
+        - build-web:
+            requires:
+              - test
