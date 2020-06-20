@@ -7,10 +7,16 @@ jobs:
       name: node/default
     steps:
       - checkout
+      - persist_to_workspace:
+          root: /home/circleci/project
+          paths: 
+             - "**"
   install:
     executor:
       name: node/default
     steps:
+      - attach_workspace:
+          at: /home/circleci/project
       - node/with-cache:
           steps:
             - run: npm install
@@ -18,30 +24,69 @@ jobs:
     executor:
       name: node/default
     steps:
+      - attach_workspace:
+          at: /home/circleci/project
       - node/with-cache:
           steps:
-            - run: npm lint
+            - run: npm run lint
   test:
     executor:
       name: node/default
     steps:
+      - attach_workspace:
+          at: /home/circleci/project
       - node/with-cache:
           steps:
-            - run: npm test
+            - run: npm run test
+            - store_test_results:
+                path: "test-reports"
   build-node:
     executor:
       name: node/default
     steps:
+      - attach_workspace:
+          at: /home/circleci/project
       - node/with-cache:
           steps:
-            - run: npm test      
+            - run: npm run build:node  
+            - store_artifacts:
+                path: node-build
+            - persist_to_workspace:
+                root: /home/circleci/project
+                paths: 
+                  - "node-build"
   build-web:
     executor:
       name: node/default
     steps:
+      - attach_workspace:
+          at: /home/circleci/project
       - node/with-cache:
           steps:
-            - run: npm test   
+            - run: npm run build:web 
+            - store_artifacts:
+                path: web-build
+            - persist_to_workspace:
+                root: /home/circleci/project
+                paths: 
+                  - "**"
+  build-docker-image:
+    docker:
+      - image: alpine:latest
+    steps:
+      - attach_workspace:
+          at: /root/project
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Install dependencies
+          command: |
+            apk add docker-cli
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM 
+          docker build -t solo474/hackernews:latest .
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
+          docker push solo474/hackernews:latest
 workflows:
     build-and-test:
       jobs:
@@ -54,10 +99,14 @@ workflows:
               - install
         - test:
             requires:
-              - install
+              - lint
         - build-node:
             requires:
               - test
         - build-web:
             requires:
               - test
+        - build-docker-image:
+            requires:
+              - build-web
+              - build-node
