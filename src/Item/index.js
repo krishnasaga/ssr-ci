@@ -27,7 +27,9 @@ export const Item = ({
       </Cell>
       <Cell>
         <span data-test-id={'item-news-title'} >{title}</span> 
-        <span data-testid={'item-news-website'}  >{ url ? (new URL(url)).hostname : ''}</span>
+        <span data-testid={'item-news-website'}  >
+          <BodyTextLite>({ url ? (new URL(url)).hostname : ''})</BodyTextLite>
+        </span>
        {author} <span data-testid={'item-news-createdAt'} >
            { created_at ? format(created_at) : ''}
          </span>
@@ -53,4 +55,9 @@ export const Row = styled.div`
 export const Cell = styled.div`
   padding: 5px;
   text-align: ${({center}) => center ? 'center' : 'left'};
+`;
+
+export const BodyTextLite =  styled.div`
+  font-size: 0.7rem;
+  color: grey
 `;
