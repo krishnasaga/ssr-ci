@@ -8,7 +8,7 @@ import {
   YAxis,
   VerticalGridLines,
   HorizontalGridLines,
-  LineSeries,
+  LineMarkSeries,
 } from "react-vis";
 import {
   useWindowWidth
@@ -47,7 +47,7 @@ export default () => {
            labelValues={XLabelValues}
            tickValues={xTickValues} />
         <YAxis title={"Points"}  tickValues={yTickValues} />
-        <LineSeries
+        <LineMarkSeries
            animation
            data={plotData}
          />
