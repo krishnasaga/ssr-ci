@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect,useRef } from "react";
 import { useFetch } from "use-http";
 import { NewsContext } from "../App";
 import { useParams } from "@reach/router";
@@ -6,15 +6,20 @@ import { useParams } from "@reach/router";
 export const useHackerNews = ({pageNumber}) => {
   const [news, setNews] = useContext(NewsContext);
   const items = news && news.collection;
+  const ref = useRef();
+ 
   useEffect(() => {
+    
     const data = loadFromLocalStorage('NewsCollection');
-    if(data && pageNumber.pageNumber === 1){
+    if(data && pageNumber === 1 ){
+      
       setNews({
         type: "NEWS_ITEMS_ADDED",
         data: Object.values(data.collection),
       });
       return () =>{};
     }
+    ref.currentPage = pageNumber;
     fetch(`//hn.algolia.com/api/v1/search_by_date?tags=story&page=${pageNumber}`)
       .then((response) => {
         return response.json();

@@ -10,13 +10,20 @@ import {
   HorizontalGridLines,
   LineSeries,
 } from "react-vis";
+import {
+  useWindowWidth
+} from '@react-hook/window-size'
+ 
 
 export default () => {
   const params = useParams();
+  
   const { data } = useHackerNews({pageNumber: parseInt(params.pageNumber)}); 
   if(!data) {
     return null;
   }
+  const windowWidth = useWindowWidth();
+
   const plotData = data.map((item,index) => {
     return {
       x: index,
@@ -31,7 +38,7 @@ export default () => {
   const XLabelValues =  plotData.map( item => item.id );
 
   return (
-    <XYPlot width={1000} height={300}>
+    <XYPlot width={windowWidth > 1440 ? 1000 : windowWidth -10 } height={300}>
         <VerticalGridLines/>
         <HorizontalGridLines />
         <XAxis  title={"ID"}
@@ -41,6 +48,7 @@ export default () => {
            tickValues={xTickValues} />
         <YAxis title={"Points"}  tickValues={yTickValues} />
         <LineSeries
+           animation
            data={plotData}
          />
     </XYPlot>

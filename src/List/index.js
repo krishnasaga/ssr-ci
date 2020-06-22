@@ -29,7 +29,7 @@ export const List = () => {
         data.map((item) => (
           <Item {...item} onHide={actions.hide} upVote={actions.upVote} />
         ))}
-      <Navigation >
+      <Navigation data-testid={'news-list-navigation'}>
            <Link to={`/news/${parseInt(params.pageNumber) -1 }`} >
             Previous
            </Link>

@@ -12,7 +12,7 @@ describe('list item',() => {
       url={"https://ldeming.posthaven.com/how-not-to-be-sadandymatuschak"} />
     );
     const text = screen.getByTestId('item-news-website').innerHTML;
-    expect(text).toBe('ldeming.posthaven.com');
+    expect(text).toBe('(ldeming.posthaven.com)');
   });
 
   it('should show how old the news is',()=> {
