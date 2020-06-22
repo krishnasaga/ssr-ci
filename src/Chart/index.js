@@ -17,27 +17,32 @@ export default () => {
   if(!data) {
     return null;
   }
-  const plotData = data.map(item => {
+  const plotData = data.map((item,index) => {
     return {
-      x: item.id,
-      y: item.points
+      x: index,
+      y: item.points,
+      id: item.id
     }
   });
 
+  const yTickValues =  plotData.map( item => parseInt(item.y) );
+  const xTickValues =  plotData.map( item => parseInt(item.x) );
+
+  const XLabelValues =  plotData.map( item => item.id );
+
   return (
     <XYPlot width={1000} height={300}>
-      <VerticalGridLines />
-      <HorizontalGridLines />
-      <XAxis
-        title="ID"
-        labelFormat={(v) => `Value is ${v}`}
-        labelValues={plotData.map( (item) =>item.x)}
-        tickValues={plotData.map( (item,i) => i)}
-      />
-      <YAxis  title="ID" />
-      <LineSeries
-        data={plotData}
-      />
+        <VerticalGridLines/>
+        <HorizontalGridLines />
+        <XAxis  title={"ID"}
+                labelFormat={v => `${v}`}
+
+           labelValues={XLabelValues}
+           tickValues={xTickValues} />
+        <YAxis title={"Points"}  tickValues={yTickValues} />
+        <LineSeries
+           data={plotData}
+         />
     </XYPlot>
   );
 };
