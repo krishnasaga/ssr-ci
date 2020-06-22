@@ -3,9 +3,12 @@ import { Item } from "../Item";
 import styled from 'styled-components';
 
 import { useHackerNews } from "../api";
+import { Link,useParams } from '@reach/router';
 
 export const List = () => {
-  const { data, actions } = useHackerNews();
+  const params = useParams();
+  const { data, actions } = useHackerNews({pageNumber: parseInt(params.pageNumber)});
+
   return (
     <div>
       <Header >
@@ -26,16 +29,25 @@ export const List = () => {
         data.map((item) => (
           <Item {...item} onHide={actions.hide} upVote={actions.upVote} />
         ))}
-      <Navigation />
+      <Navigation >
+           <Link to={`/news/${parseInt(params.pageNumber) -1 }`} >
+            Previous
+           </Link>
+           ||
+           <Link to={`/news/${parseInt(params.pageNumber) + 1 }`} >
+             Next
+           </Link>
+        </Navigation>
     </div>
   );
 };
 
-export const Navigation = () => {
-  return <div> Previous || Next </div>;
-};
+export const Navigation =  styled.nav`
+   text-align: right;
+`;
 
-export const Header = styled.main`
+
+export const Header = styled.header`
   background-color: #F66502;
   min-height: 50px;
   display: grid;

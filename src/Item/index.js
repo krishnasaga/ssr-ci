@@ -16,30 +16,31 @@ export const Item = ({
 }) => {
   return (
     <Row>
-      <Cell center data-test-id={'item-comments'} >
+      <Cell center data-testid={'item-comments'} >
         <Link to={"/comments"}>  {num_comments} </Link>
       </Cell>
-      <Cell center data-test-id={'item-points'}  >
+      <Cell center data-testid={'item-points'}  >
          {points}
       </Cell>
-      <Cell center data-test-id={'item-upvote-button'} >
+      <Cell center data-testid={'item-upvote-button'} >
          <button onClick={() => upVote(id)} > up vote </button>
       </Cell>
       <Cell>
-        <span data-test-id={'item-news-title'} >{title}</span> 
+        <span data-testid={'item-news-title'} >{title}</span> 
         <span data-testid={'item-news-website'}  >
           <BodyTextLite>({ url ? (new URL(url)).hostname : ''})</BodyTextLite>
         </span>
+        <BodyTextLite> by </BodyTextLite>
        {author} <span data-testid={'item-news-createdAt'} >
-           { created_at ? format(created_at) : ''}
+           <BodyTextLite>{ created_at ? format(created_at) : ''}</BodyTextLite>
          </span>
-        <span
+        <HideButton
           onClick={() => {
             onHide(id);
           }}
         >
-          hide
-        </span>
+          [ Hide ]
+        </HideButton>
       </Cell>
     </Row>
   );
@@ -49,15 +50,19 @@ export const Row = styled.div`
   background-color: #F6F6EF;
   min-height: 50px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr  5fr;
+  grid-template-columns: 1fr 1fr 1fr  7fr;
 `;
 
-export const Cell = styled.div`
+export const Cell = styled.span`
   padding: 5px;
   text-align: ${({center}) => center ? 'center' : 'left'};
 `;
 
-export const BodyTextLite =  styled.div`
+export const BodyTextLite =  styled.span`
   font-size: 0.7rem;
   color: grey
+`;
+
+export const HideButton =  styled.span`
+  cursor: pointer;
 `;

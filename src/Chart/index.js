@@ -1,7 +1,7 @@
 import React from "react";
 import { useHackerNews } from '../api';
+import { useParams } from '@reach/router';
 import "react-vis/dist/style.css";
-
 import {
   XYPlot,
   XAxis,
@@ -12,30 +12,31 @@ import {
 } from "react-vis";
 
 export default () => {
-  const { data } = useHackerNews(); 
+  const params = useParams();
+  const { data } = useHackerNews({pageNumber: parseInt(params.pageNumber)}); 
   if(!data) {
     return null;
   }
-  
+  const plotData = data.map(item => {
+    return {
+      x: item.id,
+      y: item.points
+    }
+  });
+
   return (
     <XYPlot width={1000} height={300}>
       <VerticalGridLines />
       <HorizontalGridLines />
       <XAxis
-        hideLine
-        title="X"
+        title="ID"
         labelFormat={(v) => `Value is ${v}`}
-        labelValues={[2]}
-        tickValues={[1, 1.5, 2, 3]}
+        labelValues={plotData.map( (item) =>item.x)}
+        tickValues={plotData.map( (item,i) => i)}
       />
-      <YAxis hideTicks />
+      <YAxis  title="ID" />
       <LineSeries
-        data={data.map(item => {
-          return {
-            x: item.id,
-            y: item.points
-          }
-        })}
+        data={plotData}
       />
     </XYPlot>
   );
